@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 半透明蓝色背景 -->
+    <!-- 这里使用 #80 作为透明度值，表示 50% 的透明度 -->
+    <solid android:color="#C000FFFF"/>
+    <!-- 其他属性如圆角、边框等可以在这里添加 -->
+</shape>
