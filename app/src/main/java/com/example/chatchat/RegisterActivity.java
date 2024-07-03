@@ -1,6 +1,8 @@
 package com.example.chatchat;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,27 +11,34 @@ import android.widget.Toast;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText etUsername, etEmail, etPassword;
+    private EditText etRegisterUsername, etRegisterPassword;
     private Button btnRegister;
+    private UserDAO userDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        etUsername = findViewById(R.id.etRegisterUsername);
-        etPassword = findViewById(R.id.etRegisterPassword);
+        etRegisterUsername = findViewById(R.id.etRegisterUsername);
+        etRegisterPassword = findViewById(R.id.etRegisterPassword);
         btnRegister = findViewById(R.id.btnRegister);
+
+        userDAO = new UserDAO(this);
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = etUsername.getText().toString().trim();
-                String email = etEmail.getText().toString().trim();
-                String password = etPassword.getText().toString().trim();
+                String username = etRegisterUsername.getText().toString().trim();
+                String password = etRegisterPassword.getText().toString().trim();
 
-                if (isValidCredentials(username, email, password)) {
-                    registerUser(username, email, password);
+                if (isValidCredentials(username, password)) {
+                    if (userDAO.addUser(username, password)) {
+                        Toast.makeText(RegisterActivity.this, "User registered successfully", Toast.LENGTH_SHORT).show();
+                        redirectToLoginActivity(); // 跳转到登录界面
+                    } else {
+                        Toast.makeText(RegisterActivity.this, "Registration failed", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     Toast.makeText(RegisterActivity.this, "Please fill all fields correctly", Toast.LENGTH_SHORT).show();
                 }
@@ -37,15 +46,13 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private boolean isValidCredentials(String username, String email, String password) {
-        // 简单验证输入是否为空
-        return !username.isEmpty() && !email.isEmpty() && !password.isEmpty();
+    private boolean isValidCredentials(String username, String password) {
+        return !username.isEmpty() && !password.isEmpty() && password.length() >= 6;
     }
 
-    private void registerUser(String username, String email, String password) {
-        // 这里应该调用后端API来注册用户
-        // 以下为模拟的注册成功提示
-        Toast.makeText(this, "User registered successfully", Toast.LENGTH_SHORT).show();
-
+    private void redirectToLoginActivity() {
+        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+        startActivity(intent);
+        // finish(); // 如果您想在此关闭注册界面，可以取消注释这行
     }
 }
